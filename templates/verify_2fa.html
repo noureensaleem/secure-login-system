@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Verify 2FA - Secure Login System{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div class="auth-header">
+        <div class="card-icon">📱</div>
+        <h1>Two-Factor Auth</h1>
+        <p>Verification code required for <strong>{{ username }}</strong></p>
+    </div>
+
+    <form method="POST" action="{{ url_for('verify_2fa') }}" autocomplete="off">
+        <!-- Anti-CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <div class="form-group" style="text-align: center;">
+            <label class="form-label" for="otp_code">Enter 6-Digit Code</label>
+            <input 
+                type="text" 
+                id="otp_code" 
+                name="otp_code" 
+                class="form-input" 
+                placeholder="000000" 
+                maxlength="6" 
+                inputmode="numeric" 
+                pattern="[0-9]*"
+                style="text-align: center; font-size: 1.8rem; letter-spacing: 0.3em; font-weight: 700; max-width: 260px; margin: 0 auto;" 
+                required 
+                autofocus
+            >
+            <small style="color: var(--text-secondary); display: block; margin-top: 0.6rem;">
+                Open your authenticator app to view the temporary one-time password (TOTP).
+            </small>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+            Verify & Authenticate
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem;">
+        <a href="{{ url_for('logout') }}" style="color: var(--text-secondary); text-decoration: none;">
+            &larr; Cancel and return to sign in
+        </a>
+    </div>
+
+    <div class="security-pills">
+        <span class="security-pill">⏱️ Time-based OTP (RFC 6238)</span>
+        <span class="security-pill">🛡️ Replay Protected</span>
+    </div>
+</div>
+{% endblock %}

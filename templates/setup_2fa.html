@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Setup Two-Factor Authentication - SecureAuth{% endblock %}
+
+{% block content %}
+<div class="auth-card" style="max-width: 580px;">
+    <div class="auth-header">
+        <div class="card-icon">🛡️</div>
+        <h1>Two-Factor Authentication</h1>
+        <p>Protect your account with an extra layer of security</p>
+    </div>
+
+    {% if already_enabled %}
+        <div class="alert alert-success" style="margin-bottom: 1.5rem;">
+            <span>✅ Two-Factor Authentication is currently <strong>Active</strong> on your account. Scanning below will generate a new replacement secret key.</span>
+        </div>
+    {% endif %}
+
+    <div style="background: rgba(0,0,0,0.25); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.5rem;">Step 1: Scan QR Code</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Open your authenticator app (Google Authenticator, Microsoft Authenticator, Authy, etc.) and scan the QR code below:
+        </p>
+
+        <div style="text-align: center;">
+            <div class="qr-card">
+                <img src="{{ qr_base64 }}" alt="2FA Setup QR Code">
+            </div>
+        </div>
+
+        <p style="font-size: 0.82rem; color: var(--text-secondary); text-align: center; margin-top: 0.5rem;">
+            Can't scan the QR code? Enter this setup key manually into your app:
+        </p>
+        <div class="secret-key-box">
+            <span>{{ formatted_secret }}</span>
+            <button type="button" id="copy-secret-btn" class="copy-btn" data-secret="{{ secret }}">Copy Key</button>
+        </div>
+    </div>
+
+    <form method="POST" action="{{ url_for('setup_2fa') }}" autocomplete="off">
+        <!-- Anti-CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.5rem;">Step 2: Enter Verification Code</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Enter the 6-digit code shown in your authenticator app to verify and activate 2FA:
+        </p>
+
+        <div class="form-group" style="text-align: center;">
+            <input 
+                type="text" 
+                id="otp_code" 
+                name="otp_code" 
+                class="form-input" 
+                placeholder="123456" 
+                maxlength="6" 
+                inputmode="numeric" 
+                pattern="[0-9]*"
+                style="text-align: center; font-size: 1.6rem; letter-spacing: 0.25em; font-weight: 700; max-width: 240px; margin: 0 auto;" 
+                required 
+                autofocus
+            >
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
+            Activate Two-Factor Authentication
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem;">
+        <a href="{{ url_for('dashboard') }}" style="color: var(--text-secondary); text-decoration: none;">
+            &larr; Back to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

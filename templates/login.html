@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - Secure Login System{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div class="auth-header">
+        <div class="card-icon">🔐</div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to your protected account</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('login', next=request.args.get('next')) }}" autocomplete="off">
+        <!-- Anti-CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Identifier Input -->
+        <div class="form-group">
+            <label class="form-label" for="identifier">Username or Email</label>
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="identifier" 
+                    name="identifier" 
+                    class="form-input" 
+                    placeholder="Enter username or email" 
+                    value="{{ identifier or '' }}" 
+                    required 
+                    autofocus
+                >
+            </div>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.45rem;">
+                <label class="form-label" for="login-password" style="margin-bottom: 0;">Password</label>
+            </div>
+            <div class="input-wrapper">
+                <input 
+                    type="password" 
+                    id="login-password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Enter your password" 
+                    required
+                >
+                <button type="button" class="toggle-password" data-target="login-password" title="Show password">👁️</button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 0.75rem;">
+            Sign In Securely
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+        Don't have an account? <a href="{{ url_for('register') }}" style="color: var(--accent); text-decoration: none; font-weight: 600;">Sign up now</a>
+    </div>
+
+    <!-- Security Protections info -->
+    <div class="security-pills">
+        <span class="security-pill">⚡ Rate Limited</span>
+        <span class="security-pill">🛡️ Parameterized Queries</span>
+        <span class="security-pill">🔒 2FA Compatible</span>
+    </div>
+</div>
+{% endblock %}

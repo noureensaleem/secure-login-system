@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Secure Login System{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+    <div class="auth-header">
+        <div class="card-icon">🛡️</div>
+        <h1>Create Account</h1>
+        <p>Register with enterprise-grade password protection</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('register') }}" novalidate autocomplete="off">
+        <!-- Anti-CSRF Token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Username Input -->
+        <div class="form-group">
+            <label class="form-label" for="username">Username</label>
+            <div class="input-wrapper">
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username" 
+                    class="form-input" 
+                    placeholder="e.g. alex_hunter" 
+                    value="{{ username or '' }}" 
+                    required 
+                    minlength="3" 
+                    maxlength="30"
+                >
+            </div>
+            <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.25rem; display: block;">
+                3-30 characters (letters, numbers, underscores only)
+            </small>
+        </div>
+
+        <!-- Email Input -->
+        <div class="form-group">
+            <label class="form-label" for="email">Email Address</label>
+            <div class="input-wrapper">
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="form-input" 
+                    placeholder="alex@company.com" 
+                    value="{{ email or '' }}" 
+                    required 
+                    maxlength="254"
+                >
+            </div>
+        </div>
+
+        <!-- Password Input with Strength Meter -->
+        <div class="form-group">
+            <label class="form-label" for="reg-password">Master Password</label>
+            <div class="input-wrapper">
+                <input 
+                    type="password" 
+                    id="reg-password" 
+                    name="password" 
+                    class="form-input" 
+                    placeholder="Enter strong password" 
+                    required 
+                    maxlength="128"
+                >
+                <button type="button" class="toggle-password" data-target="reg-password" title="Show password">👁️</button>
+            </div>
+            
+            <!-- Real-time strength meter -->
+            <div class="strength-meter">
+                <div class="strength-bar-bg">
+                    <div id="strength-fill" class="strength-bar-fill"></div>
+                </div>
+                <div class="strength-text">
+                    <span id="strength-text">Password Strength</span>
+                </div>
+                
+                <ul class="req-list">
+                    <li id="req-length" class="req-item invalid"><span class="req-icon">○</span> At least 8 characters</li>
+                    <li id="req-upper" class="req-item invalid"><span class="req-icon">○</span> Uppercase letter (A-Z)</li>
+                    <li id="req-lower" class="req-item invalid"><span class="req-icon">○</span> Lowercase letter (a-z)</li>
+                    <li id="req-number" class="req-item invalid"><span class="req-icon">○</span> Number (0-9)</li>
+                    <li id="req-special" class="req-item invalid"><span class="req-icon">○</span> Special character (!@#$%^&*)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Confirm Password Input -->
+        <div class="form-group">
+            <label class="form-label" for="reg-confirm-password">Confirm Password</label>
+            <div class="input-wrapper">
+                <input 
+                    type="password" 
+                    id="reg-confirm-password" 
+                    name="confirm_password" 
+                    class="form-input" 
+                    placeholder="Re-enter password" 
+                    required 
+                    maxlength="128"
+                >
+                <button type="button" class="toggle-password" data-target="reg-confirm-password" title="Show password">👁️</button>
+            </div>
+            <div id="match-error" style="display:none; color: var(--danger); font-size: 0.78rem; margin-top: 0.35rem;">
+                ⚠️ Passwords do not match yet.
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">
+            Create Protected Account
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-secondary);">
+        Already registered? <a href="{{ url_for('login') }}" style="color: var(--accent); text-decoration: none; font-weight: 600;">Sign in here</a>
+    </div>
+
+    <!-- Security Badges -->
+    <div class="security-pills">
+        <span class="security-pill">🔒 bcrypt Salting</span>
+        <span class="security-pill">🛡️ SQLi Immune</span>
+        <span class="security-pill">🔑 CSRF Shield</span>
+    </div>
+</div>
+{% endblock %}
